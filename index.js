@@ -1,8 +1,20 @@
-const fs = require("fs");
 const http = require("http");
+const fs = require("fs");
+const path = require('path');
+const multer = require('multer');
 
-http
-  .createServer((req, res) => {
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads'); // Specify the destination folder
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname); // Retain original filename
+    }
+});
+
+const upload = multer({ storage: storage });
+
+http.createServer((req, res) => {
     if (req.url === "/") {
       res.end("This is Home Page");
     } 
@@ -16,13 +28,37 @@ http
         fs.writeFile('demo.txt', 'hello world', (error) => {
             if (error) {
                 console.error('Error writing file:', error);
-                res.end('Failed');
+                res.statusCode = 404;
+                res.end('File Write Fail');
             }
             else {
                 console.log('File written successfully');
                 res.end('success');
             }
         });
+    }
+    else if(req.url === '/upload'){
+        fs.readFile("index.html", "utf-8", (error, data)=>{
+            res.write(data);
+            res.end();
+        })
+    }
+    else if(req.url === '/fileUpload'){
+        upload.single('file')(req, res, (err) => {
+            if (err) {
+                res.writeHead(500, { 'Content-Type': 'text/plain' });
+                res.write('Error uploading file');
+            } else {
+                res.writeHead(200, { 'Content-Type': 'text/plain' });
+                res.write('File uploaded successfully');
+            }
+            res.end();
+        });
+    }
+    else {
+        // res.Status(500)
+        res.statusCode = 404;
+        res.end("Wrong Url Parameter")
     }
   })
   .listen(5500, () => {
