@@ -46,10 +46,9 @@ http.createServer((req, res) => {
     else if(req.url === '/fileUpload'){
         upload.single('uFile')(req, res, (err) => {
             if (err) {
-                res.statusCode=400
+                res.statusCode=404
                 res.write('Error uploading file');
             } else {
-                res.writeHead(200, { 'Content-Type': 'text/html' });
                 res.write('File uploaded successfully');
             }
             res.end();
