@@ -3,16 +3,16 @@ const http = require("http");
 
 http
   .createServer((req, res) => {
-    if (req.url == "/") {
+    if (req.url === "/") {
       res.end("This is Home Page");
     } 
-    else if (req.url == "/contact") {
+    else if (req.url === "/contact") {
       res.end("This is Contact Page");
     }
-    else if (req.url == "/about") {
+    else if (req.url === "/about") {
       res.end("This is About Page");
     }
-    else if (req.url == "/file-write") {
+    else if (req.url === "/file-write") {
         fs.writeFile('demo.txt', 'hello world', (error) => {
             if (error) {
                 console.error('Error writing file:', error);
