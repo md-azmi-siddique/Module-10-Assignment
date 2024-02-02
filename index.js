@@ -8,7 +8,7 @@ const storage = multer.diskStorage({
         cb(null, './uploads'); // Specify the destination folder
     },
     filename: function (req, file, cb) {
-        cb(null, file.originalname); // Retain original filename
+        cb(null, `${Date.now()}-${file.originalname}`);
     }
 });
 
@@ -44,12 +44,12 @@ http.createServer((req, res) => {
         })
     }
     else if(req.url === '/fileUpload'){
-        upload.single('file')(req, res, (err) => {
+        upload.single('uFile')(req, res, (err) => {
             if (err) {
-                res.writeHead(500, { 'Content-Type': 'text/plain' });
+                res.statusCode=400
                 res.write('Error uploading file');
             } else {
-                res.writeHead(200, { 'Content-Type': 'text/plain' });
+                res.writeHead(200, { 'Content-Type': 'text/html' });
                 res.write('File uploaded successfully');
             }
             res.end();
